@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>炫酷GSAP动画效果</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- GSAP核心库及插件 -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/TextPlugin.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/MotionPathPlugin.min.js"></script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .preserve-3d {
+                transform-style: preserve-3d;
+            }
+            .perspective {
+                perspective: 1000px;
+            }
+            .backface-hidden {
+                backface-visibility: hidden;
+            }
+            .rotate-y-180 {
+                transform: rotateY(180deg);
+            }
+            .gradient-text {
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+            }
+        }
+    </style>
+    
+    <style>
+        body {
+            overflow-x: hidden;
+            background: radial-gradient(circle at center, #1a202c, #0f172a);
+        }
+        
+        .floating {
+            will-change: transform;
+        }
+        
+        .card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+        }
+        
+        .path-animation-container {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        .grid-pattern {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body class="text-white min-h-screen">
+    <!-- 视差背景 -->
+    <div class="fixed inset-0 grid-pattern opacity-30" id="parallax-bg"></div>
+    
+    <!-- 浮动元素 -->
+    <div class="fixed top-20 left-[10%] w-16 h-16 bg-purple-500 rounded-full blur-xl opacity-50 floating" style="animation-delay: 0s;"></div>
+    <div class="fixed top-40 right-[15%] w-24 h-24 bg-blue-500 rounded-full blur-xl opacity-50 floating" style="animation-delay: 0.5s;"></div>
+    <div class="fixed bottom-20 left-[20%] w-20 h-20 bg-pink-500 rounded-full blur-xl opacity-50 floating" style="animation-delay: 1s;"></div>
+
+    <header class="relative min-h-screen flex items-center justify-center overflow-hidden px-4">
+        <div class="absolute inset-0 flex items-center justify-center">
+            <h1 class="text-[clamp(3rem,15vw,8rem)] font-extrabold text-center leading-none opacity-10" id="hero-bg-text">ANIMATION</h1>
+        </div>
+        
+        <div class="relative z-10 text-center">
+            <h2 class="text-[clamp(2rem,8vw,5rem)] font-bold mb-6" id="hero-title">
+                <span class="block gradient-text bg-gradient-to-r from-blue-400 to-purple-600">GSAP</span>
+                <span class="block gradient-text bg-gradient-to-r from-purple-400 to-pink-600">动画特效</span>
+            </h2>
+            <p class="text-[clamp(1rem,3vw,1.5rem)] max-w-2xl mx-auto mb-10 text-gray-300" id="hero-subtitle">
+                探索令人惊叹的3D变换与交互效果
+            </p>
+            <button id="scroll-down" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-8 py-3 rounded-full border border-white/30 transition-all duration-300 flex items-center justify-center mx-auto">
+                向下探索
+                <i class="fa fa-chevron-down ml-2"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="relative">
+        <!-- 3D翻转卡片部分 -->
+        <section class="py-20 px-4">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-[clamp(1.5rem,5vw,3rem)] font-bold mb-16 text-center">
+                    <span class="gradient-text bg-gradient-to-r from-cyan-400 to-blue-500">3D 翻转卡片</span>
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- 卡片1 -->
+                    <div class="card perspective h-80 cursor-pointer" data-card>
+                        <div class="card-inner relative w-full h-full preserve-3d rounded-2xl shadow-2xl">
+                            <div class="card-front bg-gradient-to-br from-blue-600 to-indigo-800 p-8 rounded-2xl flex flex-col justify-center">
+                                <div class="text-5xl mb-6"><i class="fa fa-rocket"></i></div>
+                                <h3 class="text-2xl font-bold mb-2">太空探索</h3>
+                                <p class="text-blue-100">探索宇宙的奥秘，穿越星系之间的旅程</p>
+                            </div>
+                            <div class="card-back bg-gradient-to-br from-indigo-900 to-purple-900 p-8 rounded-2xl flex flex-col justify-center rotate-y-180">
+                                <div class="text-5xl mb-6"><i class="fa fa-globe"></i></div>
+                                <h3 class="text-2xl font-bold mb-2">星际旅行</h3>
+                                <p class="text-purple-100">超越光速，探索未知的星球和文明</p>
+                                <div class="mt-6 text-sm text-purple-200">点击卡片翻转</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 卡片2 -->
+                    <div class="card perspective h-80 cursor-pointer" data-card>
+                        <div class="card-inner relative w-full h-full preserve-3d rounded-2xl shadow-2xl">
+                            <div class="card-front bg-gradient-to-br from-green-600 to-emerald-800 p-8 rounded-2xl flex flex-col justify-center">
+                                <div class="text-5xl mb-6"><i class="fa fa-leaf"></i></div>
+                                <h3 class="text-2xl font-bold mb-2">自然之力</h3>
+                                <p class="text-green-100">感受大自然的力量与生命的循环</p>
+                            </div>
+                            <div class="card-back bg-gradient-to-br from-emerald-900 to-teal-900 p-8 rounded-2xl flex flex-col justify-center rotate-y-180">
+                                <div class="text-5xl mb-6"><i class="fa fa-mountain"></i></div>
+                                <h3 class="text-2xl font-bold mb-2">地球脉动</h3>
+                                <p class="text-teal-100">山川湖海，森林草原，生命的交响曲</p>
+                                <div class="mt-6 text-sm text-teal-200">点击卡片翻转</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 卡片3 -->
+                    <div class="card perspective h-80 cursor-pointer" data-card>
+                        <div class="card-inner relative w-full h-full preserve-3d rounded-2xl shadow-2xl">
+                            <div class="card-front bg-gradient-to-br from-amber-600 to-orange-800 p-8 rounded-2xl flex flex-col justify-center">
+                                <div class="text-5xl mb-6"><i class="fa fa-fire"></i></div>
+                                <h3 class="text-2xl font-bold mb-2">能量爆发</h3>
+                                <p class="text-amber-100">释放内在的能量，突破极限</p>
+                            </div>
+                            <div class="card-back bg-gradient-to-br from-orange-900 to-red-900 p-8 rounded-2xl flex flex-col justify-center rotate-y-180">
+                                <div class="text-5xl mb-6"><i class="fa fa-bolt"></i></div>
+                                <h3 class="text-2xl font-bold mb-2">无限动力</h3>
+                                <p class="text-red-100">燃烧激情，驱动未来的无限可能</p>
+                                <div class="mt-6 text-sm text-red-200">点击卡片翻转</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 路径动画部分 -->
+        <section class="py-20 px-4 bg-black/30 backdrop-blur-sm">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-[clamp(1.5rem,5vw,3rem)] font-bold mb-16 text-center">
+                    <span class="gradient-text bg-gradient-to-r from-pink-400 to-rose-600">路径动画</span>
+                </h2>
+                
+                <div class="path-animation-container bg-black/20 rounded-3xl p-4 relative overflow-hidden">
+                    <svg width="100%" height="100%" class="absolute" viewBox="0 0 1000 400" preserveAspectRatio="none">
+                        <path id="motion-path" d="M50,200 C300,100 700,300 950,200" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2" />
+                    </svg>
+                    
+                    <div id="path-element" class="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full shadow-lg flex items-center justify-center text-white text-2xl absolute">
+                        <i class="fa fa-comet"></i>
+                    </div>
+                    
+                    <button id="path-restart" class="absolute bottom-4 right-4 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full backdrop-blur-sm transition-all duration-300">
+                        <i class="fa fa-refresh mr-1"></i> 重新播放
+                    </button>
+                </div>
+                
+                <div class="mt-8 text-center text-gray-400">
+                    <p>元素将沿着定义的曲线路径运动，同时保持方向指向运动方向</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 粒子交互部分 -->
+        <section class="py-20 px-4 min-h-screen flex items-center">
+            <div class="max-w-6xl mx-auto w-full">
+                <h2 class="text-[clamp(1.5rem,5vw,3rem)] font-bold mb-16 text-center">
+                    <span class="gradient-text bg-gradient-to-r from-cyan-400 to-blue-500">交互粒子效果</span>
+                </h2>
+                
+                <div id="particle-container" class="w-full h-96 bg-black/20 rounded-3xl overflow-hidden relative cursor-crosshair">
+                    <div class="absolute inset-0 flex items-center justify-center text-gray-500">
+                        <p>在区域内移动鼠标创建粒子效果</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 滚动视差部分 -->
+        <section class="relative py-32 overflow-hidden">
+            <div class="max-w-6xl mx-auto px-4 relative z-10">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                    <div class="scroll-reveal" data-speed="0.2">
+                        <h2 class="text-[clamp(1.5rem,5vw,3rem)] font-bold mb-6">
+                            <span class="gradient-text bg-gradient-to-r from-amber-400 to-yellow-500">滚动视差效果</span>
+                        </h2>
+                        <p class="text-xl text-gray-300 mb-6">
+                            随着你的滚动，页面元素将以不同速度移动，创造出深度感和沉浸式体验。
+                        </p>
+                        <p class="text-gray-400 mb-8">
+                            这种效果利用了人眼的视觉差原理，当不同层次的元素以不同速度移动时，大脑会感知到立体感和深度。GSAP的ScrollTrigger插件让实现这种效果变得简单而高效。
+                        </p>
+                        <button class="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white px-8 py-3 rounded-full transition-all duration-300">
+                            了解更多
+                        </button>
+                    </div>
+                    
+                    <div class="relative perspective">
+                        <div class="scroll-reveal" data-speed="-0.1">
+                            <img src="https://picsum.photos/id/1/600/400" alt="视差效果图片1" class="rounded-xl shadow-2xl mb-4">
+                        </div>
+                        <div class="scroll-reveal absolute -bottom-10 -left-10" data-speed="-0.3">
+                            <img src="https://picsum.photos/id/2/300/200" alt="视差效果图片2" class="rounded-xl shadow-2xl border-4 border-white">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-12 px-4 bg-black/50 backdrop-blur-sm text-center text-gray-400">
+        <p>高级GSAP动画效果演示 &copy; 2023</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 注册GSAP插件
+            gsap.registerPlugin(ScrollTrigger, TextPlugin, MotionPathPlugin);
+            
+            // 1. 页面载入动画
+            gsap.from("#hero-title span", {
+                y: 100,
+                opacity: 0,
+                stagger: 0.3,
+                duration: 1,
+                ease: "power4.out"
+            });
+            
+            gsap.from("#hero-subtitle", {
+                y: 50,
+                opacity: 0,
+                delay: 0.6,
+                duration: 1,
+                ease: "power4.out"
+            });
+            
+            gsap.from("#scroll-down", {
+                y: 30,
+                opacity: 0,
+                delay: 1,
+                duration: 1,
+                ease: "power4.out"
+            });
+            
+            // 2. 浮动元素动画
+            document.querySelectorAll('.floating').forEach((el, i) => {
+                gsap.to(el, {
+                    y: () => Math.random() * 100 - 50,
+                    x: () => Math.random() * 100 - 50,
+                    duration: () => 10 + Math.random() * 10,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "sine.inOut"
+                });
+            });
+            
+            // 3. 3D卡片翻转效果
+            document.querySelectorAll('[data-card]').forEach(card => {
+                const inner = card.querySelector('.card-inner');
+                let flipped = false;
+                
+                // 初始动画
+                gsap.from(inner, {
+                    rotationY: -10,
+                    opacity: 0,
+                    duration: 0.8,
+                    delay: 0.2 * Array.from(document.querySelectorAll('[data-card]')).indexOf(card),
+                    ease: "back.out(1.2)"
+                });
+                
+                // 点击翻转
+                card.addEventListener('click', () => {
+                    flipped = !flipped;
+                    gsap.to(inner, {
+                        rotationY: flipped ? 180 : 0,
+                        duration: 0.6,
+                        ease: "power2.inOut"
+                    });
+                });
+            });
+            
+            // 4. 路径动画
+            const pathAnimation = gsap.timeline({ paused: true });
+            pathAnimation.to("#path-element", {
+                duration: 5,
+                motionPath: {
+                    path: "#motion-path",
+                    align: "#motion-path",
+                    alignOrigin: [0.5, 0.5],
+                    autoRotate: true
+                },
+                ease: "power1.inOut",
+                onUpdate: () => {
+                    // 创建轨迹粒子
+                    createParticle(
+                        gsap.getProperty("#path-element", "x") + 40,
+                        gsap.getProperty("#path-element", "y") + 40,
+                        2 + Math.random() * 4,
+                        getComputedStyle(document.getElementById("path-element")).background
+                    );
+                }
+            });
+            
+            // 自动播放路径动画
+            pathAnimation.play();
+            
+            // 重新播放按钮
+            document.getElementById('path-restart').addEventListener('click', () => {
+                pathAnimation.restart();
+            });
+            
+            // 5. 粒子效果
+            const particleContainer = document.getElementById('particle-container');
+            
+            particleContainer.addEventListener('mousemove', (e) => {
+                const rect = particleContainer.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                // 创建多个粒子
+                for (let i = 0; i < 5; i++) {
+                    const size = 2 + Math.random() * 6;
+                    const color = `hsl(${Math.random() * 60 + 180}, 100%, 60%)`;
+                    createParticle(x, y, size, color);
+                }
+            });
+            
+            // 创建粒子函数
+            function createParticle(x, y, size, color) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                particle.style.backgroundColor = color;
+                particle.style.opacity = 0.8;
+                
+                particleContainer.appendChild(particle);
+                
+                // 粒子动画
+                gsap.to(particle, {
+                    x: () => Math.random() * 100 - 50,
+                    y: () => Math.random() * 100 - 50,
+                    opacity: 0,
+                    duration: 1 + Math.random() * 2,
+                    ease: "power2.out",
+                    onComplete: () => {
+                        particle.remove();
+                    }
+                });
+            }
+            
+            // 6. 滚动视差效果
+            gsap.to("#parallax-bg", {
+                y: () => window.innerHeight * 0.5,
+                scrollTrigger: {
+                    trigger: "main",
+                    start: "top top",
+                    end: "bottom bottom",
+                    scrub: 1
+                }
+            });
+            
+            // 滚动揭示动画
+            document.querySelectorAll('.scroll-reveal').forEach(el => {
+                const speed = el.dataset.speed || 0.5;
+                
+                gsap.from(el, {
+                    y: 100 * (1 / parseFloat(speed)),
+                    opacity: 0,
+                    scrollTrigger: {
+                        trigger: el,
+                        start: "top 80%",
+                        end: "top 20%",
+                        scrub: true
+                    }
+                });
+            });
+            
+            // 7. 滚动到下一部分
+            document.getElementById('scroll-down').addEventListener('click', () => {
+                gsap.to(window, {
+                    scrollTo: {
+                        y: document.querySelector('section').offsetTop,
+                        autoKill: false
+                    },
+                    duration: 1,
+                    ease: "power2.inOut"
+                });
+            });
+        });
+    </script>
+</body>
+</html>
