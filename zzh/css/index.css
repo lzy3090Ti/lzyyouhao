@@ -1,0 +1,46 @@
+
+*{margin: 0 auto;padding: 0}
+body{background: #faf0d8;}
+a{text-decoration: none;color: #fff;}
+.quan{width: 1200px;height:1200px;background: #fff;}
+.right{width: 868px;height: 100%;margin-left: 15px;float: left;}
+
+
+/*首页*/
+.right .rtop{width:853px;height: 58px;border-bottom: 2px solid #561403;color: #561403;font-size: 18px;float: left;}
+.right .rtop span{margin-top: 30px;margin-left: 10px;float: left;}
+.right .rcen{width: 100%;height: 475px;float: left;padding:20px 0 20px 0;}
+.right .rcen .ft{width: 521px;height:100%;float: left;}
+.right .rcen .ft p{margin-bottom: 25px;line-height: 26px;}
+.right .rcen .ri{width: 317px;height: 100%;padding: 0 10px 0 20px;float: left;}
+.right .rxc{width: 100%;height: 222px;float: left;padding-top: 15px;font-size: 0;}
+.right .rbtn{width: 100%;height: 202px;float: left;padding-top: 19px;}
+.right .rbtn .rbleft{float: left;}
+.right .rbtn .rbright{float: left;margin-left: 25px;}
+.right .rbtn .rbright li{margin-top: 20px;list-style: none;}
+
+/*爱好*/
+.right .rahtop{width: 100%;height: 314px;padding-top: 15px;float: left;}
+.right .food{width: 100%;height: 256px;padding-top: 28px;float: left;}
+.right .food .foodfl{height: 100%;width: 431px;float: left;padding-right: 20px;}
+.right .food .foodfl span{font-size: 24px;font-weight: 600;}
+.right .food .foodfl p{margin-top: 20px;}
+.right .food .foodri{width: 417px;height: 100%;float: left;}
+
+/*日志*/
+.right .rzbtn{width: 853px;height: 764px;float: left;}
+.right .rzbtn p{margin-top: 26px;}
+
+/*相册*/
+.right .xc{width: 854px;height: 387px;padding-top: 20px;float: left;font-size: 0;}
+.right .xc img{float: left}
+.right .xcbtn{width: 854px;height: 349px;float: left;font-size: 0;padding-top: 9px;}
+
+/*联系*/
+.right .lx{width: 854px;float: left;}
+.right .lx ul{width: 730;margin-left: 25px;margin-bottom: 115px;}
+.right .lx ul li{list-style: none;font-weight: 600;margin-top: 30px;}
+
+
+
+
